@@ -39,16 +39,16 @@ let donneesProduit = fetch(`http://localhost:3000/api/products/${id}`)
     });
 
     let boutonAjout = document.getElementById('addToCart');
-    let choixCouleur = document.getElementById('colors');
     let panierArticle = JSON.parse(localStorage.getItem('article'));
     let listeArticles = [];
 
     boutonAjout.addEventListener('click', () => {
         let panierArticle = JSON.parse(localStorage.getItem('article'));
         console.log(panierArticle)
-        if (panierArticle == null) {
         let couleurArticle = document.getElementById('colors').value;
         let nombreArticle = document.getElementById('quantity').value;
+
+        if (panierArticle === null) {
         let articleInfos = {
             id: id,
             couleur: couleurArticle,
@@ -57,15 +57,25 @@ let donneesProduit = fetch(`http://localhost:3000/api/products/${id}`)
         listeArticles.push(articleInfos);
         localStorage.setItem('article', JSON.stringify(listeArticles));
         }
-        if (panierArticle != null) {
+
+        if (panierArticle !== null) {
             for (let i in panierArticle) {
                 let objet = panierArticle[i];
-                console.log(objet)
-                let couleurArticle = document.getElementById('colors').value;
-                let nombreArticle = document.getElementById('quantity').value;
-
-                if (id == objet.id && couleurArticle == objet.quantite) {
-                    console.log('slt')
+                if ((id === objet.id) && (couleurArticle === objet.couleur)) {
+                    let nombreArticleNumber = parseInt(nombreArticle, 10);
+                    let objetQuantiteNumber = parseInt(objet.quantite, 10);
+                    panierQuantite = nombreArticleNumber += objetQuantiteNumber;
+                    panierArticle.splice(i, 1);
+                    console.log(panierArticle) 
+                    console.log(panierQuantite)
+                    let articleInfos = {
+                        id: id,
+                        couleur: couleurArticle,
+                        quantite: panierQuantite
+                    };
+                    listeArticles.push(articleInfos);
+                    localStorage.setItem('article', JSON.stringify(listeArticles));
+                    console.log(panierArticle)
                 }
             }
         }
