@@ -44,31 +44,32 @@ let donneesProduit = fetch(`http://localhost:3000/api/products/${id}`)
 
     boutonAjout.addEventListener('click', () => {
         let panierArticle = JSON.parse(localStorage.getItem('article'));
-        console.log(panierArticle)
-        let couleurArticle = document.getElementById('colors').value;
-        let nombreArticle = document.getElementById('quantity').value;
+        let couleurArticle = document.getElementById('colors').value; // It's better to parse value here instead of line number 65
+        let nombreArticle = document.getElementById('quantity').value; // It's better to parse value here instead of line number 66
+        let articleInfos; // It's better to init articleInfos first. Like this, you know can access it in this scope
 
         if (panierArticle === null) {
-        let articleInfos = {
-            id: id,
-            couleur: couleurArticle,
-            quantite: nombreArticle
-        };
-        listeArticles.push(articleInfos);
-        localStorage.setItem('article', JSON.stringify(listeArticles));
+            let articleInfos = { // Remove the let here
+                id: id,
+                couleur: couleurArticle,
+                quantite: nombreArticle
+            };
+            listeArticles.push(articleInfos);
+            localStorage.setItem('article', JSON.stringify(listeArticles));
         }
 
-        if (panierArticle !== null) {
+        if (panierArticle !== null) {  // In this case it make sense to use 'if' and 'else' instead of two 'if'
+
             for (let i in panierArticle) {
                 let objet = panierArticle[i];
                 if ((id === objet.id) && (couleurArticle === objet.couleur)) {
-                    let nombreArticleNumber = parseInt(nombreArticle, 10);
-                    let objetQuantiteNumber = parseInt(objet.quantite, 10);
+                    let nombreArticleNumber = parseInt(nombreArticle, 10); // second param not necessary : 10 is the default value
+                    let objetQuantiteNumber = parseInt(objet.quantite, 10); // second param not necessary : 10 is the default value
                     panierQuantite = nombreArticleNumber += objetQuantiteNumber;
                     panierArticle.splice(i, 1);
                     console.log(panierArticle) 
                     console.log(panierQuantite)
-                    let articleInfos = {
+                    let articleInfos = { // Remove the let here
                         id: id,
                         couleur: couleurArticle,
                         quantite: panierQuantite
@@ -80,7 +81,6 @@ let donneesProduit = fetch(`http://localhost:3000/api/products/${id}`)
             }
         }
     });
-
 });
 
 
