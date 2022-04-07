@@ -41,80 +41,57 @@ let donneesProduit = fetch(`http://localhost:3000/api/products/${id}`)
     let boutonAjout = document.getElementById('addToCart');
 
     boutonAjout.addEventListener('click', () => {
+        //Je déclare toutes les variables donr j'aurais bnesoin au début pour ne pas avoir à les redéclarer
         let panierArticle = JSON.parse(localStorage.getItem('article'));
-        let couleurArticle = document.getElementById('colors').value; // It's better to parse value here instead of line number 65
-        let nombreArticle = document.getElementById('quantity').value; // It's better to parse value here instead of line number 66
-        let articleInfos; // It's better to init articleInfos first. Like this, you know can access it in this scope
-
+        let couleurArticle = document.getElementById('colors').value;
+        let nombreArticle = parseInt(document.getElementById('quantity').value);
+        let articleInfos = {
+            id: id,
+            couleur: couleurArticle,
+            quantite: nombreArticle
+        };
+    
+        //Je créer un if null parceque lors du premier clique, si panierArticle est vide et que je tente de l'envoyer dans le localStorage
+        //je reçois un message d'erreur, je créer recréer donc dans la fonction panierarticle sous forme de array vide que je remplis puis
+        //que j'envois, si je tente de sortir mon JSON.stringify du if je recevrais une erreur car panierArticle seras condiéré comme vide.
         if (panierArticle === null) {
-            let articleInfos = { // Remove the let here
+            let panierArticle = []
+            let articleInfos = {
                 id: id,
                 couleur: couleurArticle,
                 quantite: nombreArticle
             };
-            listeArticles.push(articleInfos);
-            localStorage.setItem('article', JSON.stringify(listeArticles));
-        }
-
-        if (panierArticle !== null) {  // In this case it make sense to use 'if' and 'else' instead of two 'if'
-
+            panierArticle.push(articleInfos);
+            localStorage.setItem('article', JSON.stringify(panierArticle));
+            } else {
+            //Plutôt que de créer un deuxième if je créé un else dans lequel j'insère ma boucle qui viendras vérifier si il doit incrémenter
+            //et la raison pour laquelle elle ne marchais pas avant était qu'elle modifiais panierArticle, mais que c'était listeArticle qui
+            //était push, dans l'état actuel la fonction marche et l'incrémentation fonctionne bien.
             for (let i in panierArticle) {
                 let objet = panierArticle[i];
-                if ((id === objet.id) && (couleurArticle === objet.couleur)) {
-                    let nombreArticleNumber = parseInt(nombreArticle, 10); // second param not necessary : 10 is the default value
-                    let objetQuantiteNumber = parseInt(objet.quantite, 10); // second param not necessary : 10 is the default value
-                    panierQuantite = nombreArticleNumber += objetQuantiteNumber;
-                    panierArticle.splice(i, 1);
-                    console.log(panierArticle) 
-                    console.log(panierQuantite)
-                    let articleInfos = { // Remove the let here
-                        id: id,
-                        couleur: couleurArticle,
-                        quantite: panierQuantite
-                    };
-                    listeArticles.push(articleInfos);
-                    localStorage.setItem('article', JSON.stringify(listeArticles));
-                    console.log(panierArticle)
-                }
+                    if ((panierArticle !== null) && (id === objet.id) && (couleurArticle === objet.couleur)) {
+                        let objetQuantiteNumber = parseInt(objet.quantite);
+                        panierQuantite = nombreArticle += objetQuantiteNumber;
+                        let articleInfos = {
+                            id: id,
+                            couleur: couleurArticle,
+                            quantite: panierQuantite
+                        };
+                        console.log(articleInfos)
+                        panierArticle.splice(i, 1);
+                        panierArticle.push(articleInfos);
+                        localStorage.setItem('article', JSON.stringify(panierArticle));
+                        break;
+                        }
+                    }
             }
-        }
+            //Maintenant la question que je me pose c'est : où est ce que je met ma fonction final qui viendras, si les deux
+            //autres fonction n'ont rien fait ajouter quelque chose, je ne sais pas comment faire, je ne peux pas le mettre 
+            //dans ma boucle sinon il se répéte, si je le sort de ma boucle comment faire pour qu'il ne soit pas éxécuter si
+            //l'incrémentation à marcher ? et impossible de le mettre dans la fonction comme dans l'éxemple parceque sinon, 
+            //quand le localstorage est vide au premeir clique j'ai un message d'erreur qui dit qu'il ne peux pas push dans une variable 
+            // null. J'espère que ca auras été assez corremctment expliqué.
     });
 });
 
-//let boutonAjout = document.getElementById('addToCart');
-
-//boutonAjout.addEventListener('click', () => {
-//    let panierArticle = JSON.parse(localStorage.getItem('article'));
-//    let couleurArticle = document.getElementById('colors').value;
-//    let nombreArticle = parseInt(document.getElementById('quantity').value);
-//
-//    if (panierArticle === null) {
-//        let panierArticle = []
-//        let articleInfos = {
-//            id: id,
-//            couleur: couleurArticle,
-//            quantite: nombreArticle
-//        };
-//        panierArticle.push(articleInfos);
-//        localStorage.setItem('article', JSON.stringify(panierArticle));
-//        }
-//
-//    for (let i in panierArticle) {
-//    let objet = panierArticle[i];
-//        if ((panierArticle !== null) && (id === objet.id) && (couleurArticle === objet.couleur)) {
-//            let objetQuantiteNumber = parseInt(objet.quantite);
-//            panierQuantite = nombreArticle += objetQuantiteNumber;
-//            let articleInfos = {
-//                id: id,
-//                couleur: couleurArticle,
-//                quantite: panierQuantite
-//            };
-//            console.log(articleInfos)
-//            panierArticle.splice(i, 1);
-//            panierArticle.push(articleInfos);
-//            localStorage.setItem('article', JSON.stringify(panierArticle));
-//            break;
-//        }
-//    }
-//});
-
+ 
