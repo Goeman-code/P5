@@ -39,44 +39,38 @@ let donneesProduit = fetch(`http://localhost:3000/api/products/${id}`)
     });
 
     let boutonAjout = document.getElementById('addToCart');
-    let panierArticle = JSON.parse(localStorage.getItem('article'));
-    let listeArticles = [];
 
     boutonAjout.addEventListener('click', () => {
         let panierArticle = JSON.parse(localStorage.getItem('article'));
-        console.log(panierArticle)
         let couleurArticle = document.getElementById('colors').value;
-        let nombreArticle = document.getElementById('quantity').value;
+        let nombreArticle = parseInt(document.getElementById('quantity').value);
 
         if (panierArticle === null) {
-        let articleInfos = {
-            id: id,
-            couleur: couleurArticle,
-            quantite: nombreArticle
-        };
-        listeArticles.push(articleInfos);
-        localStorage.setItem('article', JSON.stringify(listeArticles));
-        }
+            let panierArticle = []
+            let articleInfos = {
+                id: id,
+                couleur: couleurArticle,
+                quantite: nombreArticle
+            };
+            panierArticle.push(articleInfos);
+            localStorage.setItem('article', JSON.stringify(panierArticle));
+            }
 
-        if (panierArticle !== null) {
-            for (let i in panierArticle) {
-                let objet = panierArticle[i];
-                if ((id === objet.id) && (couleurArticle === objet.couleur)) {
-                    let nombreArticleNumber = parseInt(nombreArticle, 10);
-                    let objetQuantiteNumber = parseInt(objet.quantite, 10);
-                    panierQuantite = nombreArticleNumber += objetQuantiteNumber;
-                    panierArticle.splice(i, 1);
-                    console.log(panierArticle) 
-                    console.log(panierQuantite)
-                    let articleInfos = {
-                        id: id,
-                        couleur: couleurArticle,
-                        quantite: panierQuantite
-                    };
-                    listeArticles.push(articleInfos);
-                    localStorage.setItem('article', JSON.stringify(listeArticles));
-                    console.log(panierArticle)
-                }
+        for (let i in panierArticle) {
+        let objet = panierArticle[i];
+            if ((panierArticle !== null) && (id === objet.id) && (couleurArticle === objet.couleur)) {
+                let objetQuantiteNumber = parseInt(objet.quantite);
+                panierQuantite = nombreArticle += objetQuantiteNumber;
+                let articleInfos = {
+                    id: id,
+                    couleur: couleurArticle,
+                    quantite: panierQuantite
+                };
+                console.log(articleInfos)
+                panierArticle.splice(i, 1);
+                panierArticle.push(articleInfos);
+                localStorage.setItem('article', JSON.stringify(panierArticle));
+                break;
             }
         }
     });
