@@ -42,39 +42,79 @@ let donneesProduit = fetch(`http://localhost:3000/api/products/${id}`)
 
     boutonAjout.addEventListener('click', () => {
         let panierArticle = JSON.parse(localStorage.getItem('article'));
-        let couleurArticle = document.getElementById('colors').value;
-        let nombreArticle = parseInt(document.getElementById('quantity').value);
+        let couleurArticle = document.getElementById('colors').value; // It's better to parse value here instead of line number 65
+        let nombreArticle = document.getElementById('quantity').value; // It's better to parse value here instead of line number 66
+        let articleInfos; // It's better to init articleInfos first. Like this, you know can access it in this scope
 
         if (panierArticle === null) {
-            let panierArticle = []
-            let articleInfos = {
+            let articleInfos = { // Remove the let here
                 id: id,
                 couleur: couleurArticle,
                 quantite: nombreArticle
             };
-            panierArticle.push(articleInfos);
-            localStorage.setItem('article', JSON.stringify(panierArticle));
-            }
+            listeArticles.push(articleInfos);
+            localStorage.setItem('article', JSON.stringify(listeArticles));
+        }
 
-        for (let i in panierArticle) {
-        let objet = panierArticle[i];
-            if ((panierArticle !== null) && (id === objet.id) && (couleurArticle === objet.couleur)) {
-                let objetQuantiteNumber = parseInt(objet.quantite);
-                panierQuantite = nombreArticle += objetQuantiteNumber;
-                let articleInfos = {
-                    id: id,
-                    couleur: couleurArticle,
-                    quantite: panierQuantite
-                };
-                console.log(articleInfos)
-                panierArticle.splice(i, 1);
-                panierArticle.push(articleInfos);
-                localStorage.setItem('article', JSON.stringify(panierArticle));
-                break;
+        if (panierArticle !== null) {  // In this case it make sense to use 'if' and 'else' instead of two 'if'
+
+            for (let i in panierArticle) {
+                let objet = panierArticle[i];
+                if ((id === objet.id) && (couleurArticle === objet.couleur)) {
+                    let nombreArticleNumber = parseInt(nombreArticle, 10); // second param not necessary : 10 is the default value
+                    let objetQuantiteNumber = parseInt(objet.quantite, 10); // second param not necessary : 10 is the default value
+                    panierQuantite = nombreArticleNumber += objetQuantiteNumber;
+                    panierArticle.splice(i, 1);
+                    console.log(panierArticle) 
+                    console.log(panierQuantite)
+                    let articleInfos = { // Remove the let here
+                        id: id,
+                        couleur: couleurArticle,
+                        quantite: panierQuantite
+                    };
+                    listeArticles.push(articleInfos);
+                    localStorage.setItem('article', JSON.stringify(listeArticles));
+                    console.log(panierArticle)
+                }
             }
         }
     });
-
 });
 
+//let boutonAjout = document.getElementById('addToCart');
+
+//boutonAjout.addEventListener('click', () => {
+//    let panierArticle = JSON.parse(localStorage.getItem('article'));
+//    let couleurArticle = document.getElementById('colors').value;
+//    let nombreArticle = parseInt(document.getElementById('quantity').value);
+//
+//    if (panierArticle === null) {
+//        let panierArticle = []
+//        let articleInfos = {
+//            id: id,
+//            couleur: couleurArticle,
+//            quantite: nombreArticle
+//        };
+//        panierArticle.push(articleInfos);
+//        localStorage.setItem('article', JSON.stringify(panierArticle));
+//        }
+//
+//    for (let i in panierArticle) {
+//    let objet = panierArticle[i];
+//        if ((panierArticle !== null) && (id === objet.id) && (couleurArticle === objet.couleur)) {
+//            let objetQuantiteNumber = parseInt(objet.quantite);
+//            panierQuantite = nombreArticle += objetQuantiteNumber;
+//            let articleInfos = {
+//                id: id,
+//                couleur: couleurArticle,
+//                quantite: panierQuantite
+//            };
+//            console.log(articleInfos)
+//            panierArticle.splice(i, 1);
+//            panierArticle.push(articleInfos);
+//            localStorage.setItem('article', JSON.stringify(panierArticle));
+//            break;
+//        }
+//    }
+//});
 
