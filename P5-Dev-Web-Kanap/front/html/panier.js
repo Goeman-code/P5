@@ -51,8 +51,10 @@ const listeProduits = async () => {
 listeProduits()
 
 
-
+//Je créé une boucle for qui me permettra de créer le addEventListener de chaque input
 for (let i in panierArticle) {
+    //Malgré toutes les méthodes testée ci dessous, impossible de récupérer mon html collection, je reçois juste un Array vide
+
     //let inputQuantite = document.getElementsByClassName('itemQuantity');
     //inputQuantite = Array.from(HTMLCollection);
     //const inputQuantite = [...document.getElementsByClassName('itemQuantity')];
@@ -60,6 +62,7 @@ for (let i in panierArticle) {
     console.log(inputQuantite)
     let articleModif = inputQuantite[i];
     console.log(articleModif)
+    
     articleModif.addEventListener('change', async () => {
         await fetchProduits();
         console.log(donneesProduit)
