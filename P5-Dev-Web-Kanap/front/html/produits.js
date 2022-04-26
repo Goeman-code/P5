@@ -17,13 +17,13 @@ window.addEventListener("DOMContentLoaded", () => {
             let nomPrixTab = nomPrix[0];
             nomPrixTab.innerHTML =
                 `<h1 id="title">${donneesProduit.name}</h1>
-    <p>Prix : <span id="price">${donneesProduit.price}</span>€</p>`;
+            <p>Prix : <span id="price">${donneesProduit.price}</span>€</p>`;
 
             let produitDescription = document.getElementsByClassName('item__content__description');
             let produitDescriptionTab = produitDescription[0];
             produitDescriptionTab.innerHTML =
                 `<p class="item__content__description__title">Description :</p>
-    <p id="description">${donneesProduit.description}</p>`;
+            <p id="description">${donneesProduit.description}</p>`;
 
 
             let diffColours = `${donneesProduit.colors}`
