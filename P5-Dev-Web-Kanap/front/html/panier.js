@@ -233,7 +233,7 @@ window.addEventListener("DOMContentLoaded", () => {
             console.log(contact)
             console.log(products)
 
-            let orderId = fetch("http://localhost:3000/api/products/order", {
+            fetch("http://localhost:3000/api/order", {
                 method: "POST",
                 headers: {
                     'Accept': 'application/json',
@@ -243,6 +243,11 @@ window.addEventListener("DOMContentLoaded", () => {
             }).then(res => {
                 return res.json()
             })
-            .then(data => console.log(data))
+            .then(data => {
+                console.log(data)
+                infosCommande = data
+                console.log(infosCommande)
+                window.location.href = "./confirmation.html?id=${infosCommande.orderId}"
+            })
         })
 });
