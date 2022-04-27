@@ -1,6 +1,8 @@
+// move your JS files in appropriate folder
+
 let panierArticle = JSON.parse(localStorage.getItem('article'));
 let donneesProduit;
-let products = []
+let products = []  // if you use french name, use it everywhere : produits
 
 const fetchProduits = () => {
     return new Promise((resolve, reject) => {
@@ -25,7 +27,7 @@ const listeProduits = async () => {
         let articleId = objet.id;
         products.push(articleId)
 
-        let infosProduit = donneesProduit.find(produit => produit._id == articleId);
+        let infosProduit = donneesProduit.find(produit => produit._id == articleId); // avoid using simple comparaison. Always use strict comparaison for more consistent
 
         let listeArticles = document.getElementById('cart__items');
         let article = document.createElement('article');
