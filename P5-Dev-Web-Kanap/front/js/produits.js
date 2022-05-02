@@ -1,16 +1,17 @@
-// move your JS files in appropriate folder
-
+//Récupération de l'id du produit présent dans l'url.
 const produit = window.location.href
 var url = new URL(produit);
 var id = url.searchParams.get("id")
 
 
 window.addEventListener("DOMContentLoaded", () => {
+    //Récupération des informations précise du produit à travers l'API.
     let donneesProduit = fetch(`http://localhost:3000/api/products/${id}`)
         .then((res) => (res.json()))
         .then((promise) => {
             donneesProduit = promise
             console.log(donneesProduit)
+            //récupération des éléments du fichier html puis implémentation des informations récupérées avec le fetch
             let imageProduit = document.getElementsByClassName('item__img');
             let elementUn = imageProduit[0];
             elementUn.innerHTML = `<img src="${donneesProduit.imageUrl}" alt="${donneesProduit.name}">`;
@@ -40,12 +41,21 @@ window.addEventListener("DOMContentLoaded", () => {
             };
         });
 
+    //récupération du bouton puis ajout du addEventListener permettant soit la création d'une nouvelle ligne si le mélange produit couleur n'es pas présent
+    //ou la modification de la quantité si il est déjà présent dans le localStorage.
     let boutonAjout = document.getElementById('addToCart');
-
     boutonAjout.addEventListener('click', () => {
         let panierArticle = JSON.parse(localStorage.getItem('article')) ?? [];
         let couleurArticle = document.getElementById('colors').value;
         let nombreArticle = parseInt(document.getElementById('quantity').value);
+        if (couleurArticle === '') {
+            alert('Veuillez séléctionner une couleur')
+            return
+        }
+        if (nombreArticle === 0) {
+            alert('Veuillez séléctionner une quantité supérieur à 0')
+            return
+        }
 
         for (let i in panierArticle) {
             let objet = panierArticle[i];
@@ -61,6 +71,7 @@ window.addEventListener("DOMContentLoaded", () => {
             quantite: nombreArticle
         });
         localStorage.setItem('article', JSON.stringify(panierArticle));
+        alert('Votre produit à bien été ajouté au panier')
     });
 });
 

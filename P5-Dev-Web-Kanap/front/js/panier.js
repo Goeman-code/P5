@@ -2,7 +2,7 @@
 
 let panierArticle = JSON.parse(localStorage.getItem('article'));
 let donneesProduit;
-let products = []  // if you use french name, use it everywhere : produits
+let productsList = []  // if you use french name, use it everywhere : produits
 
 const fetchProduits = () => {
     return new Promise((resolve, reject) => {
@@ -25,7 +25,7 @@ const listeProduits = async () => {
     for (let i in panierArticle) {
         let objet = panierArticle[i];
         let articleId = objet.id;
-        products.push(articleId)
+        productsList.push(articleId)
 
         let infosProduit = donneesProduit.find(produit => produit._id == articleId); // avoid using simple comparaison. Always use strict comparaison for more consistent
 
@@ -139,7 +139,6 @@ function calculTotal () {
         (previousValue, currentValue) => previousValue + currentValue,
         baseValue
     );
-    console.log(completeQuantite)
 
     let tableauPrix = document.querySelectorAll('.cart__item__content__description > p.recup');
     let arrPrix = Array.from(tableauPrix);
@@ -150,7 +149,6 @@ function calculTotal () {
         (previousValue, currentValue) => previousValue + currentValue,
         valueBase
     );
-    console.log(completePrix)
 
     let quantiteTotal = document.getElementById('totalQuantity');
     quantiteTotal.innerHTML = `${completeQuantite}`
@@ -161,95 +159,128 @@ function calculTotal () {
 
 
 window.addEventListener("DOMContentLoaded", () => {
-    const formNom = document.getElementById('firstName');
-    let firstName = 'string'
-    const formPrenom = document.getElementById('lastName');
-    let lastName = 'string'
-    const formAdresse = document.getElementById('address');
-    let address = 'string'
-    const formVille = document.getElementById('city');
-    let city = 'string'
-    const formEmail = document.getElementById('email');
-    let email = 'string'
-
-    const formButton = document.getElementById('order')
-
-    let filtreNom = /^[a-zA-Z]+(([',. -][a-zA-Z ])?[a-zA-Z]*){2,15}$/
+    let filtreNom = /^[A-Za-zÀ-ÖØ-öø-ÿ]+(([',. -][A-Za-zÀ-ÖØ-öø-ÿ])?[A-Za-zÀ-ÖØ-öø-ÿ]*){2,15}$/
     let filtreAddresse = /^\d{1,5}\s([A-Za-zÀ-ÖØ-öø-ÿ])+(([',. -][A-Za-zÀ-ÖØ-öø-ÿ])?[A-Za-zÀ-ÖØ-öø-ÿ]*)*$/
     let filtreVille = /^[A-Za-zÀ-ÖØ-öø-ÿ]+(([',. -][A-Za-zÀ-ÖØ-öø-ÿ]{2,15})?[A-Za-zÀ-ÖØ-öø-ÿ]*)*$/
-    let filtreMail = /^([A-Za-zÀ-ÖØ-öø-ÿ\d\.-]+)@([A-Za-zÀ-ÖØ-öø-ÿ\d-]+)\.([a-zA-Z]{2,8})$/
+    let filtreMail = /^([a-zA-Z\d\.-]+)@([a-zA-Z\d-]+)\.([a-zA-Z]{2,8})$/
+    
+    const formNom = document.getElementById('firstName');
+    let firstName = 0
+    const formPrenom = document.getElementById('lastName');
+    let lastName = 0
+    const formAdresse = document.getElementById('address');
+    let address = 0
+    const formVille = document.getElementById('city');
+    let city = 0
+    const formEmail = document.getElementById('email');
+    let email = 0
 
+
+    const formButton = document.getElementById('order')
         formButton.addEventListener('click', (e) => {
-            nom = formNom.value;
-            let verifNom = nom.match(filtreNom);
-            if (verifNom == null) {
+            e.preventDefault
+            let hasError = false
+            
+            if (formNom.value.length < 2) {
                 document.getElementById('firstNameErrorMsg').innerHTML = `
-                    Veuillez entrer votre prénom.`
+                Veuillez entrer votre prénom.`
+                hasError = true
+            } else if (filtreNom.test(formNom.value) === false) {
+                document.getElementById('firstNameErrorMsg').innerHTML = `
+                Veuillez entrer un prénom valide.`
+                hasError = true
             } else {
-                firstName = nom
-                console.log(firstName)
+                firstName = formNom.value
+                document.getElementById('firstNameErrorMsg').innerHTML = ``
             }
-            prenom = formPrenom.value;
-            let verifPrenom = prenom.match(filtreNom);
-            if (verifPrenom == null) {
+
+            if (formPrenom.value.length < 2) {
                 document.getElementById('lastNameErrorMsg').innerHTML = `
                     Veuillez entrer votre nom.`
-            } else {
-                lastName = prenom
-                console.log(lastName)
+                    hasError = true
             }
-            addresse = formAdresse.value;
-            let verifAddresse = addresse.match(filtreAddresse);
-            if (verifAddresse == null) {
+            else if (filtreNom.test(formPrenom.value) === false) {
+                document.getElementById('lastNameErrorMsg').innerHTML = `
+                    Veuillez entrer un nom valide.`
+                    hasError = true
+            } else {
+                lastName = formPrenom.value
+                document.getElementById('lastNameErrorMsg').innerHTML = ``
+            }
+
+            if (formAdresse.value.length < 7) {
                 document.getElementById('addressErrorMsg').innerHTML = `
                     Veuillez entrer votre addresse.`
-            } else {
-                address = addresse
-                console.log(address)
+                    hasError = true
             }
-            ville = formVille.value
-            let verifVille = ville.match(filtreVille)
-            if (verifVille == null) {
-                document.getElementById('cityErrorMsg').innerHTML = `
-                Veuillez entrer le nom de votre ville.`
+            else if (filtreAddresse.test(formAdresse.value) === false) {
+                document.getElementById('addressErrorMsg').innerHTML = `
+                    Veuillez entrer une addresse valide.`
+                    hasError = true
             } else {
-                city = ville
-                console.log(city)
+                address = formAdresse.value
+                document.getElementById('addressErrorMsg').innerHTML = ``
             }
-            addresseMail = formEmail.value
-            let verifMail = addresseMail.match(filtreMail)
-            if (verifMail == null) {
-                document.getElementById('emailErrorMsg').innerHTML = `
-                Veuillez entrer votre addresse mail.`
-            } else {
-                email = addresseMail
-                console.log(email)
-            }
-            let contact = {
-                firstName: firstName,
-                lastName: lastName,
-                address: address,
-                city: city,
-                email: email
-            };
-            console.log(contact)
-            console.log(products)
 
-            fetch("http://localhost:3000/api/order", {
+            if (formVille.value.length < 1) {
+                document.getElementById('cityErrorMsg').innerHTML = `
+                    Veuillez entrer le nom de votre ville.`
+                    hasError = true
+            }
+            else if (filtreVille.test(formVille.value) === false) {
+                document.getElementById('cityErrorMsg').innerHTML = `
+                    Veuillez entrer un nom de ville valide.`
+                    hasError = true
+            } else {
+                city = formVille.value
+                document.getElementById('cityErrorMsg').innerHTML = ``
+            }
+
+            if (formEmail.value.length < 10) {
+                document.getElementById('emailErrorMsg').innerHTML = `
+                    Veuillez entrer votre addresse mail.`
+                    hasError = true
+            }
+            else if (filtreMail.test(formEmail.value) === false) {
+                document.getElementById('emailErrorMsg').innerHTML = `
+                    Veuillez entrer une addresse mail valide.`
+                    hasError = true
+            } else {
+                email = formEmail.value
+                document.getElementById('emailErrorMsg').innerHTML = ``
+            }
+
+            if (hasError === true) {
+                console.log(hasError);
+                return
+            }
+
+            let request = {
+                contact : {
+                    firstName: firstName,
+                    lastName: lastName,
+                    address: address,
+                    city: city,
+                    email: email
+                },
+                products : productsList
+            }
+
+            fetch("http://localhost:3000/api/products/order", {
                 method: "POST",
                 headers: {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify(contact, products)
+                body: JSON.stringify(request)
             }).then(res => {
                 return res.json()
             })
             .then(data => {
-                console.log(data)
-                infosCommande = data
-                console.log(infosCommande)
-                window.location.href = "./confirmation.html?id=${infosCommande.orderId}"
+                let idCommande = data.orderId
+                console.log(idCommande)
+                window.location.href = `./confirmation.html?id=${idCommande}`
             })
+            .catch(err => console.log(err))
         })
 });

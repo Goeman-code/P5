@@ -1,10 +1,10 @@
-// move your JS files in appropriate folder
-
+//Récupération de la liste de tout les produits et leurs informations
 let meubleListe = fetch("http://localhost:3000/api/products")
     .then((res) => (res.json()))
-    .then((promise) => {  // This variable is not a promise : rename it
-        meubleListe = promise  // useless declaration of variable : remove this line
+    .then((promise) => {
+        meubleListe = promise 
         console.log(meubleListe)
+        //création pour chaque article d'une fiche produti avec ses informations.
         document.getElementById("items").innerHTML = meubleListe.map(
             (meuble) => (`
           <a href="./product.html?id=${meuble._id}">
